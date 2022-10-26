@@ -1,0 +1,244 @@
+<!--
+    Winhweel.js wheel of fortune example by Douglas McKechie @ www.dougtesting.net
+    See website for tutorials and other documentation.
+
+    The MIT License (MIT)
+
+    Copyright (c) 2016 Douglas McKechie
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+-->
+<html>
+    <head>
+        <title>HTML5 Canvas Winning Wheel</title>
+        <link rel="stylesheet" href="main.css" type="text/css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+        <script type="text/javascript" src="../../Winwheel.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+        <style>
+            .disabled {
+                pointer-events: none;
+                opacity: 0.4;
+            }
+        </style>
+    </head>
+    <body>
+        <div align="center">
+            <h1>Kastiralli sarvemäng</h1>
+            <br>
+            <h3>Järgmine spin:</h3>
+            <h2 class="countdown">0:00</h2>
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <!-- <img id="spin_button" class="clickable" src="spin_on.png" alt="Spin" onClick="startSpin();" /> -->
+                    <br><br>
+                    <button class="btn btn-primary" onClick="startInterval();">LAS KEERLEB</button>
+                    <br /><br />
+                    <!-- <a href="#" onClick="resetWheel(); return false;">Play Again</a><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(reset) -->
+                    <td width="438" height="582" class="the_wheel" align="center" valign="center">
+                        <canvas id="canvas" width="434" height="434">
+                            <p style="{color: white}" align="center">Sorry, your browser doesn't support canvas. Please try another.</p>
+                        </canvas>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <br>
+        <div class="container kysimustik" style="font-size: 24px" disabled>
+            <div class="row">
+                <div class="col"></div>
+                <div class="col">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="1">
+                        <label class="form-check-label" for="exampleRadios1">
+                            Kes need
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="2">
+                        <label class="form-check-label" for="exampleRadios2">
+                            robert sarv
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="3">
+                        <label class="form-check-label" for="exampleRadios3">
+                            Ja kadi sarv
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios4" value="4">
+                        <label class="form-check-label" for="exampleRadios4">
+                            perekond sarved
+                        </label>
+                    </div>
+                    <br>
+                    <button id="submit" class="btn btn-info" style="width: 400px">VASTA</button>
+                </div>
+                <div class="col"></div>
+            </div>
+        </div>
+        <script>
+            // Create new wheel object specifying the parameters at creation time.
+            let theWheel = new Winwheel({
+                'outerRadius'     : 212,        // Set outer radius so wheel fits inside the background.
+                'innerRadius'     : 75,         // Make wheel hollow so segments don't go all way to center.
+                'textFontSize'    : 20,         // Set default font size for the segments.
+                'textOrientation' : 'vertical', // Make text vertial so goes down from the outside of wheel.
+                'textAlignment'   : 'outer',    // Align text to outside of wheel.
+                'numSegments'     : 10,         // Specify number of segments.
+                'segments'        :             // Define segments including colour and text.
+                [                               // font size and test colour overridden on backrupt segments.
+                   {'fillStyle' : '#ee1c24', 'text' : 'Roger'},
+                   {'fillStyle' : '#3cb878', 'text' : 'Sten'},
+                   {'fillStyle' : '#f6989d', 'text' : 'Lauri'},
+                   {'fillStyle' : '#00aef0', 'text' : 'Garri'},
+                   {'fillStyle' : '#f26522', 'text' : 'Reimo'},
+                   {'fillStyle' : '#e70697', 'text' : 'Gerd'},
+                   {'fillStyle' : '#fff200', 'text' : 'Lars'},
+                   {'fillStyle' : '#f6989d', 'text' : 'Kristo'},
+                   {'fillStyle' : '#ee1c24', 'text' : 'Mattias'},
+                   {'fillStyle' : '#3cb878', 'text' : 'Markkos'},
+                //    {'fillStyle' : '#000000', 'text' : 'BANKRUPT', 'textFontSize' : 16, 'textFillStyle' : '#ffffff'},
+                //    {'fillStyle' : '#ffffff', 'text' : 'LOOSE TURN', 'textFontSize' : 12}
+                ],
+                'animation' :           // Specify the animation to use.
+                {
+                    'type'     : 'spinToStop',
+                    'duration' : 13,    // Duration in seconds.
+                    'spins'    : 10,     // Default number of complete spins.
+                    'callbackFinished' : enableQuestions,
+                    // 'callbackSound'    : playSound,   // Function to call when the tick sound is to be triggered.
+                    // 'soundTrigger'     : 'segment'        // Specify pins are to trigger the sound, the other option is 'segment'.
+                },
+            });
+            const sarved = [
+                "Kes need",
+                "robert sarv",
+                "Ja kadi sarv",
+                "perekond sarved",
+            ];
+            let lastAnswer = Math.floor(Math.random() * 4) + 1;
+            let newAnswer = 0;
+            
+            // alert('Mäng algab lausega ' + sarved[lastAnswer]);
+
+            // Loads the tick audio sound in to an audio object.
+            let audio = new Audio('nekro17.mp3');
+
+            // This function is called when the sound is to be played.
+            function playSound()
+            {
+                // Play the sound.
+                audio.play();
+            }
+
+            function stopSound() {
+                // Stop and rewind the sound if it already happens to be playing.
+                audio.pause();
+                audio.currentTime = 0;
+            }
+
+            // Vars used by the code in this page to do power controls.
+            let wheelSpinning = false;
+
+            function startInterval() {
+                $('.kysimustik').addClass('disabled')
+                var timer = "0:10";
+                var interval = setInterval(function() {
+                    var splitTimer = timer.split(':');
+                    //by parsing integer, I avoid all extra string processing
+                    var minutes = parseInt(splitTimer[0], 10);
+                    var seconds = parseInt(splitTimer[1], 10);
+                    --seconds;
+                    minutes = (seconds < 0) ? --minutes : minutes;
+                    if (minutes == 0) {
+                        if (seconds == 6) playSound();
+                        else if (seconds == 0) {
+                            clearInterval(interval);
+                            startSpin();
+                        }
+                    }
+                    seconds = (seconds < 0) ? 59 : seconds;
+                    seconds = (seconds < 10) ? '0' + seconds : seconds;
+                    //minutes = (minutes < 10) ?  minutes : minutes;
+                    $('.countdown').html(minutes + ':' + seconds);
+                    timer = minutes + ':' + seconds;
+                }, 1000);
+            }
+
+            function enableQuestions() {
+                $('.kysimustik').removeClass('disabled')
+                newAnswer = lastAnswer === 4 ? 1 : lastAnswer + 1;
+            }
+
+            // -------------------------------------------------------
+            // Click handler for spin button.
+            // -------------------------------------------------------
+            function startSpin()
+            {
+                // Ensure that spinning can't be clicked again while already running.
+                if (wheelSpinning == false) {
+                    playSound();
+
+                    setTimeout(function() {
+                        theWheel.animation.spins = 10 + (Math.floor(Math.random() * 30) + 1);
+                        theWheel.animation.spins = 10;
+
+                        // Begin the spin animation by calling startAnimation on the wheel object.
+                        theWheel.startAnimation();
+
+                        // Set to true so that power can't be changed and spin button re-enabled during
+                        // the current animation. The user will have to reset before spinning again.
+                    }, 0)
+                    // 6000 on hea, ehk isegi 5800
+                }
+            }
+
+            // -------------------------------------------------------
+            // Function for reset button.
+            // -------------------------------------------------------
+            function resetWheel()
+            {
+                stopSound()
+                theWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
+                theWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
+                theWheel.draw();                // Call draw to render changes to the wheel.
+
+                wheelSpinning = false;          // Reset to false to power buttons and spin can be clicked again.
+            }
+
+            $("#submit").click(function() {
+                const val = $('.form-check-input:checked').val();
+                if (!val) {
+                    alert('vali vastus krt')
+                    return false
+                }
+
+                if (val === newAnswer) alert('ÕIGE')
+                else {
+                    alert('VALE!\nõige vastus oleks\n\n' + sarved[newAnswer])
+                }
+
+                lastAnswer = newAnswer
+            })
+        </script>
+    </body>
+</html>
