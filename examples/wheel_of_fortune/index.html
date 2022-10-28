@@ -86,29 +86,31 @@
             <div class="row">
                 <div class="col"></div>
                 <div class="col">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="0">
-                        <label class="form-check-label" for="exampleRadios1">
-                            Kes need
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="1">
-                        <label class="form-check-label" for="exampleRadios2">
-                            robert sarv
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="2">
-                        <label class="form-check-label" for="exampleRadios3">
-                            Ja kadi sarv
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios4" value="3">
-                        <label class="form-check-label" for="exampleRadios4">
-                            perekond sarved
-                        </label>
+                    <div class="form-inputs">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="0">
+                            <label class="form-check-label" for="exampleRadios1">
+                                Kes need
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="1">
+                            <label class="form-check-label" for="exampleRadios2">
+                                robert sarv
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="2">
+                            <label class="form-check-label" for="exampleRadios3">
+                                Ja kadi sarv
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios4" value="3">
+                            <label class="form-check-label" for="exampleRadios4">
+                                perekond sarved
+                            </label>
+                        </div>
                     </div>
                     <br>
                     <button id="submit" class="btn btn-info">VASTA</button>
@@ -186,6 +188,7 @@
                 $('.kysimustik').addClass('disabled')
                 $('#startBtn').addClass('hidden')
                 var timer = "0:10";
+                scrambleInputs();
                 var interval = setInterval(function() {
                     var splitTimer = timer.split(':');
                     //by parsing integer, I avoid all extra string processing
@@ -210,7 +213,7 @@
 
             function enableQuestions() {
                 $('.kysimustik').removeClass('disabled')
-                newAnswer = lastAnswer === 3 ? 1 : lastAnswer + 1;
+                newAnswer = lastAnswer === 3 ? 0 : lastAnswer + 1;
             }
 
             // -------------------------------------------------------
@@ -247,6 +250,29 @@
                 theWheel.draw();                // Call draw to render changes to the wheel.
 
                 wheelSpinning = false;          // Reset to false to power buttons and spin can be clicked again.
+            }
+
+            function shuffle(array) {
+                let currentIndex = array.length,  randomIndex;
+
+                // While there remain elements to shuffle.
+                while (currentIndex != 0) {
+
+                    // Pick a remaining element.
+                    randomIndex = Math.floor(Math.random() * currentIndex);
+                    currentIndex--;
+
+                    // And swap it with the current element.
+                    [array[currentIndex], array[randomIndex]] = [
+                    array[randomIndex], array[currentIndex]];
+                }
+
+                return array;
+            }
+
+            function scrambleInputs() {
+                let elements = shuffle($('div.form-inputs > div'));
+                $('div.form-inputs').empty().append(elements);
             }
  
             $("#submit").click(function() {
